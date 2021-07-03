@@ -4,6 +4,7 @@ import App from './App.vue';
 import 'ant-design-vue/dist/antd.css';
 import router from './router';
 import store from './store';
+import './util/eventBus';
 
 Vue.use(Antd);
 Vue.config.productionTip = false;
