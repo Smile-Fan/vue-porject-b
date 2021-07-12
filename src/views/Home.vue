@@ -3,7 +3,6 @@
     <Aside></Aside>
     <topHeader></topHeader>
     <div class="main" :class="this.$store.state.collapsed ? 'active-btn' : ''">
-      <Drawer />
       <router-view></router-view>
     </div>
   </div>
@@ -12,7 +11,6 @@
 <script>
 import Aside from '@/components/Aside/index.vue';
 import topHeader from '@/components/topHeader/index.vue';
-import Drawer from '@/components/drawer/index.vue';
 
 export default {
   data() {
@@ -21,7 +19,7 @@ export default {
   components: {
     Aside,
     topHeader,
-    Drawer,
+
   },
 };
 </script>

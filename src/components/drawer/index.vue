@@ -13,35 +13,30 @@
         <a-step v-for="item in steps" :key="item.title" :title="item.title" />
       </a-steps>
       <div class="steps-content">
-        <basisInfo v-if="this.current == 0" />
-        <perfectInfo v-if="this.current == 1" />
-      </div>
-      <div class="steps-action">
-        <a-button
-          v-if="current == steps.length - 1"
-          type="primary"
-          @click="$message.success('Processing complete!')"
-        >
-          提交
-        </a-button>
+        <basicInfo
+          :data="this.data"
+          :cateData="this.cateData"
+          v-show="this.current == 0"
+        />
+        <prefectInfo :cateData="this.cateData" v-show="this.current == 1" />
       </div>
     </a-drawer>
   </div>
 </template>
 <script>
-import basisInfo from '@/components/basisInfo/index.vue';
-import perfectInfo from '@/components/perfectInfo/index.vue';
 import { getProductInfo, getCategory } from '@/api/request';
+import basicInfo from '@/components/basicInfo/index.vue';
+import prefectInfo from '@/components/prefectInfo/index.vue';
 import axios from 'axios';
 
 export default {
   data() {
     return {
       visible: false,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
-      other: '',
       current: 0,
+      result: '',
+      data: '',
+      cateData: '',
       steps: [
         {
           title: '填写基本信息',
@@ -53,23 +48,27 @@ export default {
     };
   },
   components: {
-    basisInfo,
-    perfectInfo,
+    basicInfo,
+    prefectInfo,
   },
   computed: {
     isBasis() {
       return this.current;
     },
   },
-  mounted() {
+  created() {
     this.$bus.$on('edit', async (data) => {
-      const result = await axios.all([
+      this.result = await axios.all([
         getProductInfo({
           id: data.id,
         }),
         getCategory(),
       ]);
-      console.log(result, 'zhixingle');
+      const { result } = this;
+      const [productInfo, cateInfo] = result;
+      this.data = productInfo.data;
+      this.cateData = cateInfo.data.data;
+      console.log(this.data, this.cateData);
       this.$bus.$emit('info', { data, result });
       this.visible = true;
     });
@@ -82,7 +81,9 @@ export default {
   },
   methods: {
     afterVisibleChange(val) {
-      console.log('visible', val);
+      if (val === false) {
+        this.current = 0;
+      }
     },
     onClose() {
       this.visible = false;

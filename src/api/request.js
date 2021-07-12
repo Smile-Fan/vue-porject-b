@@ -63,3 +63,10 @@ export async function getProductInfo(params) {
   });
   return data;
 }
+
+// 编辑商品
+export async function editProduct(dataList) {
+  console.log(dataList);
+  const data = await axios.put('/products/edit', dataList);
+  return data;
+}

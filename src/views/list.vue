@@ -1,5 +1,6 @@
 <template>
   <div class="list-container">
+    <Drawer />
     <div class="search">
       <a-input
         placeholder="请输入关键词"
@@ -44,11 +45,13 @@
 </template>
 <script>
 import { getProduct, getCategory, delProduct } from '@/api/request';
+import Drawer from '@/components/drawer/index.vue';
 
 export default {
   data() {
     return {
       data: [],
+      flag: false,
       pagination: {
         current: 1,
         pageSize: 10,
@@ -61,6 +64,9 @@ export default {
       searchCategory: null,
       status: ['下架', '上架'],
     };
+  },
+  components: {
+    Drawer,
   },
   created() {
     this.fetchCategory();
@@ -113,12 +119,13 @@ export default {
     },
     edit(data) {
       this.$bus.$emit('edit', data);
+      this.flag = true;
     },
     del(data) {
       delProduct({
         id: data.id,
       }).then((res) => {
-        console.log(res);
+        alert(res.msg);
       });
     },
     more(data) {
