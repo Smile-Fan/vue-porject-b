@@ -1,7 +1,6 @@
 <template>
   <div class="basicInfo">
     <a-form-model
-      v-if="data"
       ref="ruleForm"
       :rules="rules"
       :label-col="labelCol"
@@ -74,12 +73,27 @@ export default {
   props: {
     data: {
       type: Object,
-      require: true,
     },
     cateData: {
       type: Array,
-      require: true,
     },
+  },
+  mounted() {
+    this.data = this.data ? this.data : {
+      appkey: '',
+      c_item: '',
+      category: '',
+      desc: '',
+      images: '',
+      inventory: '',
+      price: '',
+      price_off: '',
+      status: '',
+      tags: '',
+      title: '',
+      unit: '',
+    };
+    console.log(this.cateData, this.data);
   },
   data() {
     return {
@@ -109,6 +123,7 @@ export default {
       this.data.c_item = '';
     },
     handleClick() {
+      console.log(this.data);
       this.$bus.$emit('next', this.data);
     },
   },

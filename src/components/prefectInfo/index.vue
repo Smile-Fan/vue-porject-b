@@ -60,12 +60,6 @@ function getBase64(file) {
   });
 }
 export default {
-  props: {
-    cateData: {
-      type: Array,
-      require: true,
-    },
-  },
   data() {
     return {
       previewVisible: false,
@@ -90,25 +84,26 @@ export default {
     };
   },
   created() {
-    this.$bus.$on('next', this.getData);
-  },
-  methods: {
-    async submit() {
-      console.log('zhixingle');
-      await editProduct({ ...this.data, images: this.fileList }).then((data) => {
-        if (data.status === 'success') {
-          alert('提交成功');
-        }
-      });
-    },
-    getData(val) {
+    this.$bus.$on('next', (val) => {
       this.data = val;
       this.fileList = this.data.images.map((item, index) => ({
         uid: `${index}`,
         name: `image${index}.png`,
         status: 'done',
-        url: item.url.url.url, // 不明白为什么
+        url: item,
       }));
+    });
+  },
+  methods: {
+    async submit() {
+      const images = this.fileList.map((item) => item.url);
+      await editProduct({ ...this.data, images }).then((data) => {
+        if (data.status === 'success') {
+          alert('提交成功');
+          this.$bus.$emit('refresh');
+          this.$bus.$emit('close');
+        }
+      });
     },
     resetCate() {
       this.data.c_item = '';

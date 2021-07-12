@@ -18,7 +18,7 @@
           :cateData="this.cateData"
           v-show="this.current == 0"
         />
-        <prefectInfo :cateData="this.cateData" v-show="this.current == 1" />
+        <prefectInfo v-show="this.current == 1" />
       </div>
     </a-drawer>
   </div>
@@ -57,6 +57,7 @@ export default {
     },
   },
   created() {
+    this.$bus.$on('close', this.onClose);
     this.$bus.$on('edit', async (data) => {
       this.result = await axios.all([
         getProductInfo({
@@ -68,8 +69,7 @@ export default {
       const [productInfo, cateInfo] = result;
       this.data = productInfo.data;
       this.cateData = cateInfo.data.data;
-      console.log(this.data, this.cateData);
-      this.$bus.$emit('info', { data, result });
+      this.$bus.$emit('info', this.cateData);
       this.visible = true;
     });
     this.$bus.$on('next', () => {

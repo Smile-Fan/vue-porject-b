@@ -119,6 +119,7 @@ export default {
     },
     edit(data) {
       this.$bus.$emit('edit', data);
+      this.$bus.$on('refresh', this.fetch);
       this.flag = true;
     },
     del(data) {
@@ -126,10 +127,8 @@ export default {
         id: data.id,
       }).then((res) => {
         alert(res.msg);
+        this.fetch();
       });
-    },
-    more(data) {
-      console.log(data);
     },
     handleClickSearch() {
       this.fetch({
