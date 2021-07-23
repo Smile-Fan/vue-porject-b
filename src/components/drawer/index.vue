@@ -13,18 +13,19 @@
         <a-step v-for="item in steps" :key="item.title" :title="item.title" />
       </a-steps>
       <div class="steps-content">
-        <basicInfo
+        <basicInfo :data="this.data" v-if="this.current == 0" @next="next" />
+        <prefectInfo
           :data="this.data"
-          :cateData="this.cateData"
-          v-show="this.current == 0"
+          v-else-if="this.current == 1"
+          @prev="prev"
+          @submit="editSubmit"
         />
-        <prefectInfo v-show="this.current == 1" />
       </div>
     </a-drawer>
   </div>
 </template>
 <script>
-import { getProductInfo, getCategory } from '@/api/request';
+import { getProductInfo, getCategory, editProduct } from '@/api/request';
 import basicInfo from '@/components/basicInfo/index.vue';
 import prefectInfo from '@/components/prefectInfo/index.vue';
 import axios from 'axios';
@@ -72,18 +73,31 @@ export default {
       this.$bus.$emit('info', this.cateData);
       this.visible = true;
     });
-    this.$bus.$on('next', () => {
-      this.current += 1;
-    });
+  },
+  mounted() {
     this.$bus.$on('prev', () => {
       this.current -= 1;
     });
   },
   methods: {
+    next(data) {
+      this.data = { ...this.data, ...data };
+      this.current += 1;
+    },
+    prev() { this.current -= 1; },
     afterVisibleChange(val) {
       if (val === false) {
         this.current = 0;
       }
+    },
+    async editSubmit(data) {
+      await editProduct(data).then((res) => {
+        if (res.status === 'success') {
+          alert('提交成功');
+          this.$bus.$emit('refresh');
+          this.$bus.$emit('close');
+        }
+      });
     },
     onClose() {
       this.visible = false;

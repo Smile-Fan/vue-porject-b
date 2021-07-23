@@ -70,3 +70,10 @@ export async function editProduct(dataList) {
   const data = await axios.put('/products/edit', dataList);
   return data;
 }
+
+// 新增商品
+export async function addProduct(dataList) {
+  console.log(dataList);
+  const data = await axios.post('/products/add', dataList);
+  return data;
+}

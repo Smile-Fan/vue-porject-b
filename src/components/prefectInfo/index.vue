@@ -1,7 +1,6 @@
 <template>
   <div class="prefectInfo">
     <a-form-model
-      v-if="data"
       ref="ruleForm"
       :model="data"
       :rules="rules"
@@ -41,15 +40,16 @@
         </a-modal>
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
-        <a-button type="primary" @click="handleClick"> 上一步 </a-button>
-        <a-button type="primary" @click="submit"> 提交 </a-button>
+        <a-button class="btn" type="primary" @click="handleClick">
+          上一步
+        </a-button>
+        <a-button class="btn" type="primary" @click="submit"> 提交 </a-button>
       </a-form-model-item>
     </a-form-model>
   </div>
 </template>
 
 <script>
-import { editProduct } from '@/api/request';
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -60,12 +60,12 @@ function getBase64(file) {
   });
 }
 export default {
+  props: ['data'],
   data() {
     return {
       previewVisible: false,
       previewImage: '',
       fileList: [],
-      data: '',
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       other: '',
@@ -84,32 +84,23 @@ export default {
     };
   },
   created() {
-    this.$bus.$on('next', (val) => {
-      this.data = val;
-      this.fileList = this.data.images.map((item, index) => ({
-        uid: `${index}`,
-        name: `image${index}.png`,
-        status: 'done',
-        url: item,
-      }));
-    });
+    this.fileList = this.data.images.map((item, index) => ({
+      uid: `${index}`,
+      name: `image${index}.png`,
+      status: 'done',
+      url: item,
+    }));
   },
   methods: {
-    async submit() {
+    submit() {
       const images = this.fileList.map((item) => item.url);
-      await editProduct({ ...this.data, images }).then((data) => {
-        if (data.status === 'success') {
-          alert('提交成功');
-          this.$bus.$emit('refresh');
-          this.$bus.$emit('close');
-        }
-      });
+      this.$emit('submit', { ...this.data, images });
     },
     resetCate() {
       this.data.c_item = '';
     },
     handleClick() {
-      this.$bus.$emit('prev');
+      this.$emit('prev');
     },
     handleCancel() {
       this.previewVisible = false;
@@ -129,5 +120,10 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.prefectInfo {
+  .btn {
+    margin: 10px;
+  }
+}
 </style>

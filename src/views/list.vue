@@ -37,8 +37,6 @@
         <span class="action" @click="edit(data)">编辑</span>
         <a-divider type="vertical" />
         <span class="action" @click="del(data)">删除</span>
-        <a-divider type="vertical" />
-        <span class="action" @click="more(data)"> 详情 </span>
       </span>
     </a-table>
   </div>
