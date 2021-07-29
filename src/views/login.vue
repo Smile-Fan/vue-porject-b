@@ -54,8 +54,13 @@
           记住密码
         </a-checkbox>
         <a class="login-form-forgot" href=""> 忘记密码 </a>
-        <a-button type="primary" html-type="submit" class="login-form-button">
-          登录
+        <a-button
+          type="primary"
+          html-type="submit"
+          class="login-form-button"
+          :disabled="this.loading"
+        >
+          {{ this.loading ? '登录中...' : '登录' }}
         </a-button>
         没有账号？
         <router-link to="/logon">现在注册!</router-link>
@@ -70,6 +75,7 @@ import { login } from '@/api/request';
 export default {
   data() {
     return {
+      loading: false,
     };
   },
   beforeCreate() {
@@ -78,10 +84,12 @@ export default {
   methods: {
     handleSubmit(e) {
       e.preventDefault();
+      this.loading = true;
       this.form.validateFields((err, values) => {
         if (!err) {
           const data = login(values.email, values.password);
           data.then((req) => {
+            console.log(req);
             this.$bus.$emit('message', req);
             if (req.status === 'success') {
               this.$store.commit('changeUser', req.data.username);

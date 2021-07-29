@@ -2,6 +2,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from '@/store';
 import getRouterName from '@/util/verifyMenu';
+import List from '@/views/list.vue';
+import Add from '@/views/add.vue';
+import Category from '@/views/category.vue';
 import Container from '@/views/Container.vue';
 import Home from '../views/Home.vue';
 import login from '../views/login.vue';
@@ -47,7 +50,7 @@ const asyncRouter = [{
     meta: {
       title: '商品列表',
     },
-    component: () => import('@/views/list.vue'),
+    component: List,
   }, {
     path: 'add',
     name: 'productAdd',
@@ -57,7 +60,7 @@ const asyncRouter = [{
     meta: {
       title: '添加商品',
     },
-    component: () => import('@/views/add.vue'),
+    component: Add,
   }, {
     path: 'category',
     name: 'category',
@@ -67,7 +70,7 @@ const asyncRouter = [{
     meta: {
       title: '商品类别',
     },
-    component: () => import('@/views/category.vue'),
+    component: Category,
   }],
 },
 ];

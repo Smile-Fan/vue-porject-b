@@ -25,6 +25,11 @@
           :file-list="fileList"
           @preview="handlePreview"
           @change="handleChange"
+          name="avatar"
+          :action="
+            'https://mallapi.duyiedu.com/upload/images?appkey=' +
+            this.$store.state.userInfo.appkey
+          "
         >
           <div v-if="fileList.length < 8">
             <a-icon type="plus" />
@@ -94,10 +99,8 @@ export default {
   methods: {
     submit() {
       const images = this.fileList.map((item) => item.url);
+      console.log(images, this.fileList);
       this.$emit('submit', { ...this.data, images });
-    },
-    resetCate() {
-      this.data.c_item = '';
     },
     handleClick() {
       this.$emit('prev');
@@ -115,6 +118,19 @@ export default {
     },
     handleChange({ fileList }) {
       this.fileList = fileList;
+      if (this.fileList.length === 0) {
+        return;
+      }
+      if (fileList[fileList.length - 1].response) {
+        this.fileList[fileList.length - 1] = {
+          url: fileList[fileList.length - 1].response.data.url,
+          uid: `${fileList.length - 1}`,
+          name: `image${fileList.length - 1}.png`,
+          status: 'done',
+        };
+      }
+      console.log(this.fileList);
+      // console.log(this.fileList);
     },
   },
 };
